@@ -1,0 +1,15 @@
+.pagination {
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.image {
+  width: 500px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
