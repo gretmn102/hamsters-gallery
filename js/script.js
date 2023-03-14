@@ -6,51 +6,63 @@
  * @param {string[]} imageSources
  */
 function createGallery(gallerySetting, imageSources) {
-  /** @type {number} */
-  let currentImageNumber = 0
+  function createView(model) {
+    return {
+      create: () => {
+        gallerySetting.leftButton.onclick = () => void model.left()
+        gallerySetting.rightButton.onclick = () => void model.right()
+      },
+      update: (/** @type {number} */ currentImageNumber) => {
+        function updateLeftButton() {
+          gallerySetting.leftButton.disabled = currentImageNumber === 0
+        }
 
-  function updateLeftButton() {
-    gallerySetting.leftButton.disabled = currentImageNumber === 0
-  }
+        function updateRightButton() {
+          gallerySetting.rightButton.disabled = currentImageNumber === imageSources.length - 1
+        }
 
-  function updateRightButton() {
-    gallerySetting.rightButton.disabled = currentImageNumber === imageSources.length - 1
-  }
+        function updateImageContainer() {
+          gallerySetting.imageContainer.setAttribute("src", imageSources[currentImageNumber])
+        }
 
-  function updateImageContainer() {
-    gallerySetting.imageContainer.setAttribute("src", imageSources[currentImageNumber])
-  }
+        function updatePagnum() {
+          gallerySetting.pageNumber.textContent = (currentImageNumber + 1).toString()
+        }
 
-  function updatePagnum() {
-    gallerySetting.pageNumber.textContent = (currentImageNumber + 1).toString()
-  }
-
-  function update() {
-    updateLeftButton()
-    updateRightButton()
-    updatePagnum()
-    updateImageContainer()
-  }
-
-  function left() {
-    if (currentImageNumber > 0) {
-      currentImageNumber--
-
-      update()
+        updateLeftButton()
+        updateRightButton()
+        updatePagnum()
+        updateImageContainer()
+      }
     }
   }
 
-  function right() {
-    if (currentImageNumber < imageSources.length - 1) {
-      currentImageNumber++
+  let view
+  function createModel() {
+    /** @type {number} */
+    let currentImageNumber = 0
 
-      update()
+    return {
+      left: () => {
+        if (currentImageNumber > 0) {
+          currentImageNumber--
+
+          view.update(currentImageNumber)
+        }
+      },
+      right: () => {
+        if (currentImageNumber < imageSources.length - 1) {
+          currentImageNumber++
+
+          view.update(currentImageNumber)
+        }
+      }
     }
   }
 
-  gallerySetting.leftButton.onclick = () => void left()
-  gallerySetting.rightButton.onclick = () => void right()
-  update()
+  let modelDispatch = createModel()
+  view = createView(modelDispatch)
+  view.create()
 }
 
 const hamsters = [
