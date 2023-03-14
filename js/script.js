@@ -22,15 +22,27 @@ function createGallery(gallerySetting, imageSources) {
         }
 
         function updateImageContainer() {
-          gallerySetting.imageContainer.setAttribute("src", imageSources[currentImageNumber])
+          const imageContainer = gallerySetting.imageContainer
+          imageContainer.setAttribute("src", imageSources[currentImageNumber])
+
+          gallerySetting.leftButton.disabled = true
+          gallerySetting.rightButton.disabled = true
+
+          imageContainer.onload = e => {
+            updateLeftButton()
+            updateRightButton()
+
+            // setTimeout(() => {
+            //   updateLeftButton()
+            //   updateRightButton()
+            // }, 1000)
+          }
         }
 
         function updatePagnum() {
           gallerySetting.pageNumber.textContent = (currentImageNumber + 1).toString()
         }
 
-        updateLeftButton()
-        updateRightButton()
         updatePagnum()
         updateImageContainer()
       }
