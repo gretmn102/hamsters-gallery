@@ -6,6 +6,36 @@
  * @param {string[]} imageSources
  */
 function createGallery(gallerySetting, imageSources) {
+  /**
+   * @param {View} view
+   * @return {Model}
+   */
+  function createModel(view) {
+    /** @type {number} */
+    let currentImageNumber = 0
+
+    return {
+      left: () => {
+        if (currentImageNumber > 0) {
+          currentImageNumber--
+
+          view.update(currentImageNumber)
+        }
+      },
+      right: () => {
+        if (currentImageNumber < imageSources.length - 1) {
+          currentImageNumber++
+
+          view.update(currentImageNumber)
+        }
+      }
+    }
+  }
+
+  /**
+   * @param {Controller} controller
+   * @return {View}
+   */
   function createView(controller) {
     return {
       create: () => {
@@ -49,31 +79,10 @@ function createGallery(gallerySetting, imageSources) {
     }
   }
 
-  function createModel(view) {
-    /** @type {number} */
-    let currentImageNumber = 0
-
-    return {
-      left: () => {
-        if (currentImageNumber > 0) {
-          currentImageNumber--
-
-          view.update(currentImageNumber)
-        }
-      },
-      right: () => {
-        if (currentImageNumber < imageSources.length - 1) {
-          currentImageNumber++
-
-          view.update(currentImageNumber)
-        }
-      }
-    }
-  }
-
-  let model
   function createController() {
-    return {
+    let model
+    /** @type {Controller} */
+    const controller = {
       left: () => {
         model.left()
       },
@@ -81,13 +90,12 @@ function createGallery(gallerySetting, imageSources) {
         model.right()
       }
     }
+    const view = createView(controller)
+    model = createModel(view)
+    view.create()
   }
 
-  let controller = createController()
-  let view = createView(controller)
-  model = createModel(view)
-
-  view.create()
+  createController()
 }
 
 const hamsters = [
