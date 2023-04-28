@@ -6,11 +6,11 @@
  * @param {string[]} imageSources
  */
 function createGallery(gallerySetting, imageSources) {
-  function createView(model) {
+  function createView(controller) {
     return {
       create: () => {
-        gallerySetting.leftButton.onclick = () => void model.left()
-        gallerySetting.rightButton.onclick = () => void model.right()
+        gallerySetting.leftButton.onclick = () => void controller.left()
+        gallerySetting.rightButton.onclick = () => void controller.right()
       },
       update: (/** @type {number} */ currentImageNumber) => {
         function updateLeftButton() {
@@ -49,8 +49,7 @@ function createGallery(gallerySetting, imageSources) {
     }
   }
 
-  let view
-  function createModel() {
+  function createModel(view) {
     /** @type {number} */
     let currentImageNumber = 0
 
@@ -72,8 +71,22 @@ function createGallery(gallerySetting, imageSources) {
     }
   }
 
-  let modelDispatch = createModel()
-  view = createView(modelDispatch)
+  let model
+  function createController() {
+    return {
+      left: () => {
+        model.left()
+      },
+      right: () => {
+        model.right()
+      }
+    }
+  }
+
+  let controller = createController()
+  let view = createView(controller)
+  model = createModel(view)
+
   view.create()
 }
 
